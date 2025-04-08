@@ -24,9 +24,8 @@
   <h3 align="center">Logger in TypeScript</h3>
 
   <p align="center">
-    A simple and asynchronous logger written in TypeScript, ready to use in any Node.js project!
-    <br />
-    <a href="https://github.com/aqueleyan/filog"><strong>Explore the documentation »</strong></a>
+    A simple and asynchronous logger written in TypeScript.
+
     <br />
     <br />
     <a href="https://github.com/aqueleyan/filog">View Demo</a>
@@ -212,7 +211,7 @@ Distributed under the Unlicense License. See `LICENSE.txt` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@your-twitter](https://twitter.com/yourusername) - youremail@example.com
+Your Name - [@your-twitter](https://twitter.com/aqueleNag) - youremail@example.com
 
 Project Link: [https://github.com/aqueleyan/filog](https://github.com/aqueleyan/filog)
 
@@ -220,18 +219,6 @@ Project Link: [https://github.com/aqueleyan/filog](https://github.com/aqueleyan/
 
 
 <!-- ACKNOWLEDGMENTS -->
-## Acknowledgments
-
-* [Choose an Open Source License](https://choosealicense.com)
-* [GitHub Emoji Cheat Sheet](https://www.webpagefx.com/tools/emoji-cheat-sheet)
-* [Malven's Flexbox Cheatsheet](https://flexbox.malven.co/)
-* [Malven's Grid Cheatsheet](https://grid.malven.co/)
-* [Img Shields](https://shields.io)
-* [GitHub Pages](https://pages.github.com)
-* [Font Awesome](https://fontawesome.com)
-* [React Icons](https://react-icons.github.io/react-icons/search)
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
