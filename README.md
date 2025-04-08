@@ -86,8 +86,7 @@ It can be easily integrated into any Node.js application, helping keep your logs
 This project was primarily developed with:
 
 * [![TypeScript][typescript-shield]][typescript-url]
-* [Node.js](https://nodejs.org)
-* [NPM](https://www.npmjs.com/)
+* [![Node.js][nodejs-shield]][nodejs-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -245,3 +244,6 @@ Project Link: [https://github.com/aqueleyan/filog](https://github.com/aqueleyan/
 
 [typescript-shield]: https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white
 [typescript-url]: https://www.typescriptlang.org/
+
+[nodejs-shield]: https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white
+[nodejs-url]: https://nodejs.org
