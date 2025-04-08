@@ -192,7 +192,7 @@ Don't forget to give the project a ⭐! Thanks again!
 4. Push to the Branch (`git push origin feature/MyAmazingFeature`)
 5. Open a Pull Request
 
-### Main Contributors:
+### Main :
 
 <a href="https://github.com/aqueleyan/filog/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=your-username/repo-name" alt="contrib.rocks image" />
@@ -247,7 +247,7 @@ Project Link: [https://github.com/aqueleyan/filog](https://github.com/aqueleyan/
 [license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=for-the-badge
 [license-url]: https://github.com/aqueleyan/filog/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/your-username
+[linkedin-url]: https://linkedin.com/in/aqueleyan
 [product-screenshot]: images/screenshot.png
 
 [typescript-shield]: https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white
