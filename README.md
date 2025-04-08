@@ -251,7 +251,9 @@ Project Link: [https://github.com/aqueleyan/filog](https://github.com/aqueleyan/
 [license-shield]: https://img.shields.io/github/license/aqueleyan/filog.svg?style=for-the-badge
 [license-url]: https://github.com/aqueleyan/filog/blob/master/LICENSE.txt
 
+[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/aqueleyan
+
 [product-screenshot]: images/screenshot.png
 
 [typescript-shield]: https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white
