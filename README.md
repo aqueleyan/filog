@@ -193,7 +193,7 @@ Don't forget to give the project a ⭐! Thanks again!
 ### Main :
 
 <a href="https://github.com/aqueleyan/filog/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=your-username/repo-name" alt="contrib.rocks image" />
+  <img src="https://contrib.rocks/image?repo=aqueleyan/filog" alt="contrib.rocks image" />
 </a>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
