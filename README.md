@@ -236,17 +236,21 @@ Project Link: [https://github.com/aqueleyan/filog](https://github.com/aqueleyan/
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- Adjust the references below according to your project -->
-[contributors-shield]: https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=for-the-badge
+[contributors-shield]: https://img.shields.io/github/contributors/aqueleyan/filog.svg?style=for-the-badge
 [contributors-url]: https://github.com/aqueleyan/filog/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/othneildrew/Best-README-Template.svg?style=for-the-badge
+
+[forks-shield]: https://img.shields.io/github/forks/aqueleyan/filog.svg?style=for-the-badge
 [forks-url]: https://github.com/aqueleyan/filog/network/members
-[stars-shield]: https://img.shields.io/github/stars/othneildrew/Best-README-Template.svg?style=for-the-badge
+
+[stars-shield]: https://img.shields.io/github/stars/aqueleyan/filog.svg?style=for-the-badge
 [stars-url]: https://github.com/aqueleyan/filog/stargazers
-[issues-shield]: https://img.shields.io/github/issues/othneildrew/Best-README-Template.svg?style=for-the-badge
+
+[issues-shield]: https://img.shields.io/github/issues/aqueleyan/filog.svg?style=for-the-badge
 [issues-url]: https://github.com/aqueleyan/filog/issues
-[license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=for-the-badge
+
+[license-shield]: https://img.shields.io/github/license/aqueleyan/filog.svg?style=for-the-badge
 [license-url]: https://github.com/aqueleyan/filog/blob/master/LICENSE.txt
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
+
 [linkedin-url]: https://linkedin.com/in/aqueleyan
 [product-screenshot]: images/screenshot.png
 
