@@ -24,7 +24,9 @@
   <h3 align="center">Logger in TypeScript</h3>
 
   <p align="center">
-    A simple and asynchronous logger written in TypeScript.
+    A simple and asynchronous logger written in TypeScript, ready to use in any Node.js project!
+    <br />
+    <a href="https://github.com/aqueleyan/filog"><strong>Explore the documentation »</strong></a>
 
     <br />
     <br />
