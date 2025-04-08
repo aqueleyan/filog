@@ -235,6 +235,7 @@ Project Link: [https://github.com/aqueleyan/filog](https://github.com/aqueleyan/
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
+
 <!-- Adjust the references below according to your project -->
 [contributors-shield]: https://img.shields.io/github/contributors/aqueleyan/filog.svg?style=for-the-badge
 [contributors-url]: https://github.com/aqueleyan/filog/graphs/contributors
