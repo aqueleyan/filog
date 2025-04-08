@@ -27,8 +27,8 @@
     A simple and asynchronous logger written in TypeScript.
     <br />
     <br />
-    <a href="https://github.com/aqueleyan/filog">View Demo</a>
-    ·
+<!--     <a href="https://github.com/aqueleyan/filog">View Demo</a>
+    · -->
     <a href="https://github.com/aqueleyan/filog/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
     ·
     <a href="https://github.com/aqueleyan/filog/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
