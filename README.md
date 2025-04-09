@@ -199,9 +199,10 @@ Don't forget to give the project a ⭐! Thanks again!
 
 
 <!-- LICENSE -->
+<!-- LICENSE -->
 ## License
 
-Distributed under the Unlicense License. See `LICENSE.txt` for more information.
+Distributed under the MIT License. See [`LICENSE`](https://github.com/aqueleyan/filog/blob/master/LICENSE.txt) for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -209,7 +210,7 @@ Distributed under the Unlicense License. See `LICENSE.txt` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@your-twitter](https://twitter.com/aqueleNag) - youremail@example.com
+[Twitter](https://twitter.com/aqueleNag) - fekieh35@gmail.com
 
 Project Link: [https://github.com/aqueleyan/filog](https://github.com/aqueleyan/filog)
 
