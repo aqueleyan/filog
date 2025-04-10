@@ -206,9 +206,9 @@ If you have suggestions that would make this better, please fork the repo and cr
 Don't forget to give the project a ⭐! Thanks again!
 
 1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/MyFilogFeature`)
+2. Create your Feature Branch (`git checkout -b feature/MyTylogFeature`)
 3. Commit your Changes (`git commit -m 'Add a customize prefix'`)
-4. Push to the Branch (`git push origin feature/MyFilogFeature`)
+4. Push to the Branch (`git push origin feature/MyTylogFeature`)
 5. Open a Pull Request
 
 ### Main :
@@ -245,19 +245,19 @@ Project Link: [https://github.com/aqueleyan/tylog](https://github.com/aqueleyan/
 <!-- MARKDOWN LINKS & IMAGES -->
 
 <!-- Adjust the references below according to your project -->
-[contributors-shield]: https://img.shields.io/github/contributors/aqueleyan/filog.svg?style=for-the-badge
+[contributors-shield]: https://img.shields.io/github/contributors/aqueleyan/tylog.svg?style=for-the-badge
 [contributors-url]: https://github.com/aqueleyan/tylog/graphs/contributors
 
-[forks-shield]: https://img.shields.io/github/forks/aqueleyan/filog.svg?style=for-the-badge
+[forks-shield]: https://img.shields.io/github/forks/aqueleyan/tylog.svg?style=for-the-badge
 [forks-url]: https://github.com/aqueleyan/tylog/network/members
 
-[stars-shield]: https://img.shields.io/github/stars/aqueleyan/filog.svg?style=for-the-badge
+[stars-shield]: https://img.shields.io/github/stars/aqueleyan/tylog.svg?style=for-the-badge
 [stars-url]: https://github.com/aqueleyan/tylog/stargazers
 
-[issues-shield]: https://img.shields.io/github/issues/aqueleyan/filog.svg?style=for-the-badge
+[issues-shield]: https://img.shields.io/github/issues/aqueleyan/tylog.svg?style=for-the-badge
 [issues-url]: https://github.com/aqueleyan/tylog/issues
 
-[license-shield]: https://img.shields.io/github/license/aqueleyan/filog.svg?style=for-the-badge
+[license-shield]: https://img.shields.io/github/license/aqueleyan/tylog.svg?style=for-the-badge
 [license-url]: https://github.com/aqueleyan/tylog/blob/master/LICENSE.txt
 
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
