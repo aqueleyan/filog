@@ -16,21 +16,21 @@
 <br />
 <div align="center">
   <!-- Replace the image with your own (optional) -->
-  <a href="https://github.com/aqueleyan/filog">
+  <a href="https://github.com/aqueleyan/tylog">
     <img src="images/logo.png" alt="Logo" width="80" height="80">
   </a>
 
-  <h3 align="center">Filog in TypeScript</h3>
+  <h3 align="center">Tylog in TypeScript</h3>
 
   <p align="center">
     A simple and asynchronous logger written in TypeScript.
     <br />
     <br />
-<!--     <a href="https://github.com/aqueleyan/filog">View Demo</a>
+<!--     <a href="https://github.com/aqueleyan/tylog">View Demo</a>
     · -->
-    <a href="https://github.com/aqueleyan/filog/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
+    <a href="https://github.com/aqueleyan/tylog/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
     ·
-    <a href="https://github.com/aqueleyan/filog/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+    <a href="https://github.com/aqueleyan/tylog/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
   </p>
 </div>
 
@@ -148,7 +148,7 @@ You can use this logger in any Node.js application or TypeScript script that req
 ### Example
 
 ```ts
-import { Logger, LogLevel } from 'filog'
+import { Logger, LogLevel } from 'tylog'
 
 const logger = new Logger({
   filePath: 'logs/app.log',
@@ -192,7 +192,7 @@ logger.critical('Critical message')
 - [x] Support for file rotation by maximum size
 - [x] Separate logs for ERROR and CRITICAL
 
-See the [open issues](https://github.com/aqueleyan/filog/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://github.com/aqueleyan/tylog/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -213,8 +213,8 @@ Don't forget to give the project a ⭐! Thanks again!
 
 ### Main :
 
-<a href="https://github.com/aqueleyan/filog/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=aqueleyan/filog" alt="contrib.rocks image" />
+<a href="https://github.com/aqueleyan/tylog/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=aqueleyan/tylog" alt="contrib.rocks image" />
 </a>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -224,7 +224,7 @@ Don't forget to give the project a ⭐! Thanks again!
 <!-- LICENSE -->
 ## License
 
-Distributed under the MIT License. See [`LICENSE`](https://github.com/aqueleyan/filog/blob/master/LICENSE.txt) for more information.
+Distributed under the MIT License. See [`LICENSE`](https://github.com/aqueleyan/tylog/blob/master/LICENSE.txt) for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -234,7 +234,7 @@ Distributed under the MIT License. See [`LICENSE`](https://github.com/aqueleyan/
 
 [Twitter](https://twitter.com/aqueleNag) - fekieh35@gmail.com
 
-Project Link: [https://github.com/aqueleyan/filog](https://github.com/aqueleyan/filog)
+Project Link: [https://github.com/aqueleyan/tylog](https://github.com/aqueleyan/tylog)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -246,19 +246,19 @@ Project Link: [https://github.com/aqueleyan/filog](https://github.com/aqueleyan/
 
 <!-- Adjust the references below according to your project -->
 [contributors-shield]: https://img.shields.io/github/contributors/aqueleyan/filog.svg?style=for-the-badge
-[contributors-url]: https://github.com/aqueleyan/filog/graphs/contributors
+[contributors-url]: https://github.com/aqueleyan/tylog/graphs/contributors
 
 [forks-shield]: https://img.shields.io/github/forks/aqueleyan/filog.svg?style=for-the-badge
-[forks-url]: https://github.com/aqueleyan/filog/network/members
+[forks-url]: https://github.com/aqueleyan/tylog/network/members
 
 [stars-shield]: https://img.shields.io/github/stars/aqueleyan/filog.svg?style=for-the-badge
-[stars-url]: https://github.com/aqueleyan/filog/stargazers
+[stars-url]: https://github.com/aqueleyan/tylog/stargazers
 
 [issues-shield]: https://img.shields.io/github/issues/aqueleyan/filog.svg?style=for-the-badge
-[issues-url]: https://github.com/aqueleyan/filog/issues
+[issues-url]: https://github.com/aqueleyan/tylog/issues
 
 [license-shield]: https://img.shields.io/github/license/aqueleyan/filog.svg?style=for-the-badge
-[license-url]: https://github.com/aqueleyan/filog/blob/master/LICENSE.txt
+[license-url]: https://github.com/aqueleyan/tylog/blob/master/LICENSE.txt
 
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/aqueleyan
