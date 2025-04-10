@@ -66,8 +66,6 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://cdn.discordapp.com/attachments/889416728042405891/1359772303503921313/image.png?ex=67f8b224&is=67f760a4&hm=a23dc6d59667163a4993efe2e8baec63485c13046fdd477f2d9eff413b244700&)
-
 This project provides an **asynchronous logger in TypeScript** with support for multiple log levels (DEBUG, INFO, WARN, ERROR, CRITICAL), multiple file outputs, log rotation based on file size, and an option to print to the console or not.
 
 It can be easily integrated into any Node.js application, helping keep your logs organized and reliable. With this package, you can:
@@ -147,17 +145,7 @@ You can use this logger in any Node.js application or TypeScript script that req
 - Back-end services running in containers that need file-based logs
 - Scripts processing large volumes of data and requiring a log history
 
-### Quick Examples
-
-```ts
-logger.debug("This is a DEBUG log, useful for development.");
-logger.info("General information about the application's flow.");
-logger.warn("Warning: something isn't optimal, but it's still working.");
-logger.error("Error: something failed and needs attention.");
-logger.critical("Critical: the application might be compromised!");
-```
-
-### Complete Example
+### Example
 
 ```ts
 import { Logger, LogLevel } from 'filog'
@@ -180,8 +168,6 @@ logger.critical('Critical message')
 ```
 
 <!-- Props -->
-## Props
-
 ## Props
 
 | Property                  | Type        | Description                                                                                                                                                               | Default / Recommended              |
