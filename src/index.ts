@@ -10,6 +10,7 @@ export enum LogLevel {
 }
 
 export interface LoggerOptions {
+  logName?: string
   filePath: string
   minLogLevel?: LogLevel
   console?: boolean
@@ -30,7 +31,12 @@ function formatDate(d: Date): string {
   return `${dd}-${mm}-${yyyy} - ${hh}:${mn}:${ss}`
 }
 
+function getSystemTimeZone(): string {
+  return Intl.DateTimeFormat().resolvedOptions().timeZone
+}
+
 export class Logger {
+  private logName: string
   private filePath: string
   private minLogLevel: LogLevel
   private writeToConsole: boolean
@@ -43,6 +49,7 @@ export class Logger {
 
   constructor(options: LoggerOptions) {
     this.filePath = options.filePath
+    this.logName = options.logName ?? this.filePath
     this.minLogLevel = options.minLogLevel ?? LogLevel.DEBUG
     this.writeToConsole = options.console ?? true
     this.createDirs = options.createPathDirectories ?? true
@@ -58,6 +65,17 @@ export class Logger {
       fs.mkdir(path.dirname(this.filePath), { recursive: true }).catch(() => {})
       fs.mkdir(path.dirname(this.errorFilePath), { recursive: true }).catch(() => {})
       fs.mkdir(path.dirname(this.criticalFilePath), { recursive: true }).catch(() => {})
+    }
+    this.initializeFile(this.logName).catch(() => {})
+  }
+
+  private async initializeFile(logName: string): Promise<void> {
+    try {
+      await fs.stat(this.filePath)
+    } catch {
+      const tz = getSystemTimeZone()
+      const header = `REAL TIME AUDIT: ${logName}\nDate set in the format [DD-MM-YYYY - HH:MM:SS] in [${tz}]\n`
+      await fs.writeFile(this.filePath, header, 'utf8')
     }
   }
 
