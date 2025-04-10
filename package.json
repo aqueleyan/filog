@@ -1,5 +1,5 @@
 {
-  "name": "tylog",
+  "name": "@aquelenag/tylog",
   "version": "1.0.0",
   "description": "A Typescript asynchronous logger for applications",
   "main": "dist/Logger.js",
