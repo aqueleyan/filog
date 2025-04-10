@@ -107,7 +107,7 @@ npm install npm@latest -g
 
 1. **Install** the package in your project:
    ```sh
-   npm install --save logger-package-ts
+   npm install --save @aquelenag/tylog
    ```
    > Replace `logger-package-ts` with the actual name of your published npm package.
 
