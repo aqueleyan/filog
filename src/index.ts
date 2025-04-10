@@ -1,4 +1,4 @@
-import { promises as fs } from 'fs'
+import { promises as fs, createWriteStream, WriteStream } from 'fs'
 import * as path from 'path'
 
 export enum LogLevel {
@@ -35,6 +35,33 @@ function getSystemTimeZone(): string {
   return Intl.DateTimeFormat().resolvedOptions().timeZone
 }
 
+function writeToStream(stream: WriteStream, data: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const canWrite = stream.write(data, 'utf8')
+    if (!canWrite) {
+      stream.once('drain', resolve)
+    } else {
+      process.nextTick(resolve)
+    }
+  })
+}
+
+async function initializeStream(file: string, logName: string, showPrefix: boolean): Promise<WriteStream> {
+  try {
+    await fs.stat(file)
+    if (showPrefix) {
+      const tz = getSystemTimeZone()
+      const prefix = `\n--- NEW LOGGER SESSION: ${logName} on [${tz}] started at [${formatDate(new Date())}] ---\n`
+      await fs.appendFile(file, prefix, 'utf8')
+    }
+  } catch {
+    const tz = getSystemTimeZone()
+    const header = `REAL TIME AUDIT: ${logName}\nDate set in the format [DD-MM-YYYY - HH:MM:SS] in [${tz}]\n`
+    await fs.writeFile(file, header, 'utf8')
+  }
+  return createWriteStream(file, { flags: 'a' })
+}
+
 export class Logger {
   private logName: string
   private filePath: string
@@ -46,10 +73,10 @@ export class Logger {
   private criticalFilePath: string
   private showEntriesPrefix: boolean
   private queue: { level: LogLevel; entry: string }[] = []
-  private isWriting = false
-  private mainFileReady = false
-  private errorFileReady = false
-  private criticalFileReady = false
+  private isProcessing = false
+  private mainStreamPromise: Promise<WriteStream>
+  private errorStreamPromise: Promise<WriteStream> | null = null
+  private criticalStreamPromise: Promise<WriteStream> | null = null
 
   constructor(options: LoggerOptions) {
     this.filePath = options.filePath
@@ -70,43 +97,21 @@ export class Logger {
       fs.mkdir(path.dirname(this.errorFilePath), { recursive: true }).catch(() => {})
       fs.mkdir(path.dirname(this.criticalFilePath), { recursive: true }).catch(() => {})
     }
-
-    void this.initializeMainFile()
+    this.mainStreamPromise = initializeStream(this.filePath, this.logName, this.showEntriesPrefix)
   }
 
-  private async initializeMainFile(): Promise<void> {
-    try {
-      await fs.stat(this.filePath)
-      if (this.showEntriesPrefix) {
-        const tz = getSystemTimeZone()
-        const prefix = `\n--- NEW LOGGER SESSION: ${this.logName} on [${tz}] started at [${formatDate(new Date())}] ---\n`
-        await fs.appendFile(this.filePath, prefix, 'utf8')
-      }
-    } catch {
-      const tz = getSystemTimeZone()
-      const header = `REAL TIME AUDIT: ${this.logName}\nDate set in the format [DD-MM-YYYY - HH:MM:SS] in [${tz}]\n`
-      await fs.writeFile(this.filePath, header, 'utf8')
-    } finally {
-      this.mainFileReady = true
+  private async getErrorStream(): Promise<WriteStream> {
+    if (!this.errorStreamPromise) {
+      this.errorStreamPromise = initializeStream(this.errorFilePath, this.logName, this.showEntriesPrefix)
     }
+    return this.errorStreamPromise
   }
 
-  private async initializeFileIfNeeded(filePath: string, isReadyFlag: 'errorFileReady' | 'criticalFileReady') {
-    if (this[isReadyFlag]) return
-    try {
-      await fs.stat(filePath)
-      if (this.showEntriesPrefix) {
-        const tz = getSystemTimeZone()
-        const prefix = `\n--- NEW LOGGER SESSION: ${this.logName} on [${tz}] started at [${formatDate(new Date())}] ---\n`
-        await fs.appendFile(filePath, prefix, 'utf8')
-      }
-    } catch {
-      const tz = getSystemTimeZone()
-      const header = `REAL TIME AUDIT: ${this.logName}\nDate set in the format [DD-MM-YYYY - HH:MM:SS] in [${tz}]\n`
-      await fs.writeFile(filePath, header, 'utf8')
-    } finally {
-      this[isReadyFlag] = true
+  private async getCriticalStream(): Promise<WriteStream> {
+    if (!this.criticalStreamPromise) {
+      this.criticalStreamPromise = initializeStream(this.criticalFilePath, this.logName, this.showEntriesPrefix)
     }
+    return this.criticalStreamPromise
   }
 
   public async log(level: LogLevel, message: string): Promise<void> {
@@ -121,71 +126,70 @@ export class Logger {
       }
     }
     this.queue.push({ level, entry })
-    void this.processQueue()
+    this.processQueue().catch(() => {})
   }
 
   private async processQueue(): Promise<void> {
-    if (this.isWriting) return
-    this.isWriting = true
+    if (this.isProcessing) return
+    this.isProcessing = true
     try {
       while (this.queue.length) {
         const { level, entry } = this.queue.shift()!
-
-        while (!this.mainFileReady) {
-          await new Promise((r) => setTimeout(r, 25))
-        }
-        await fs.appendFile(this.filePath, entry, 'utf8')
-
+        const mainStream = await this.mainStreamPromise
+        await writeToStream(mainStream, entry)
+        if (this.maxFileSize) await this.rotateIfNeeded(this.filePath, mainStream)
         if (level >= LogLevel.ERROR) {
-          await this.initializeFileIfNeeded(this.errorFilePath, 'errorFileReady')
-          await fs.appendFile(this.errorFilePath, entry, 'utf8')
+          const errorStream = await this.getErrorStream()
+          await writeToStream(errorStream, entry)
+          if (this.maxFileSize) await this.rotateIfNeeded(this.errorFilePath, errorStream)
         }
         if (level === LogLevel.CRITICAL) {
-          await this.initializeFileIfNeeded(this.criticalFilePath, 'criticalFileReady')
-          await fs.appendFile(this.criticalFilePath, entry, 'utf8')
-        }
-
-        if (this.maxFileSize) {
-          await this.checkRotation(this.filePath)
-          if (level >= LogLevel.ERROR) await this.checkRotation(this.errorFilePath)
-          if (level === LogLevel.CRITICAL) await this.checkRotation(this.criticalFilePath)
+          const criticalStream = await this.getCriticalStream()
+          await writeToStream(criticalStream, entry)
+          if (this.maxFileSize) await this.rotateIfNeeded(this.criticalFilePath, criticalStream)
         }
       }
     } finally {
-      this.isWriting = false
-      if (this.queue.length > 0) {
-        void this.processQueue()
-      }
+      this.isProcessing = false
+      if (this.queue.length > 0) this.processQueue().catch(() => {})
     }
   }
 
-  private async checkRotation(file: string): Promise<void> {
+  private async rotateIfNeeded(file: string, stream: WriteStream): Promise<void> {
     try {
       const stats = await fs.stat(file)
       if (stats.size > (this.maxFileSize ?? Infinity)) {
+        await new Promise(resolve => stream.end(resolve))
         const ts = new Date().toISOString().replace(/[:.]/g, '-')
         await fs.rename(file, `${file}.${ts}.old`)
+        if (file === this.filePath) {
+          this.mainStreamPromise = initializeStream(this.filePath, this.logName, this.showEntriesPrefix)
+        } else if (file === this.errorFilePath) {
+          this.errorStreamPromise = initializeStream(this.errorFilePath, this.logName, this.showEntriesPrefix)
+        } else if (file === this.criticalFilePath) {
+          this.criticalStreamPromise = initializeStream(this.criticalFilePath, this.logName, this.showEntriesPrefix)
+        }
       }
     } catch {}
   }
 
-  public async debug(msg: string) {
+  public async debug(msg: string): Promise<void> {
     return this.log(LogLevel.DEBUG, msg)
   }
 
-  public async info(msg: string) {
+  public async info(msg: string): Promise<void> {
     return this.log(LogLevel.INFO, msg)
   }
 
-  public async warn(msg: string) {
+  public async warn(msg: string): Promise<void> {
     return this.log(LogLevel.WARN, msg)
   }
 
-  public async error(msg: string) {
+  public async error(msg: string): Promise<void> {
     return this.log(LogLevel.ERROR, msg)
   }
 
-  public async critical(msg: string) {
+  public async critical(msg: string): Promise<void> {
     return this.log(LogLevel.CRITICAL, msg)
   }
 }
