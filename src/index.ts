@@ -17,6 +17,17 @@ export interface LoggerOptions {
   maxFileSize?: number
   errorFilePath?: string
   criticalFilePath?: string
+  useTxtExtension?: boolean
+}
+
+function formatDate(d: Date): string {
+  const dd = String(d.getDate()).padStart(2, '0')
+  const mm = String(d.getMonth() + 1).padStart(2, '0')
+  const yyyy = d.getFullYear()
+  const hh = String(d.getHours()).padStart(2, '0')
+  const mn = String(d.getMinutes()).padStart(2, '0')
+  const ss = String(d.getSeconds()).padStart(2, '0')
+  return `${dd}-${mm}-${yyyy} - ${hh}:${mn}:${ss}`
 }
 
 export class Logger {
@@ -36,16 +47,15 @@ export class Logger {
     this.writeToConsole = options.console ?? true
     this.createDirs = options.createPathDirectories ?? true
     this.maxFileSize = options.maxFileSize
-    this.errorFilePath = options.errorFilePath
-      ? options.errorFilePath
-      : this.filePath.replace(/(\.\w+)?$/, '.error.log')
-    this.criticalFilePath = options.criticalFilePath
-      ? options.criticalFilePath
-      : this.filePath.replace(/(\.\w+)?$/, '.critical.log')
-
+    this.errorFilePath = options.errorFilePath ? options.errorFilePath : this.filePath.replace(/(\.\w+)?$/, '.error.log')
+    this.criticalFilePath = options.criticalFilePath ? options.criticalFilePath : this.filePath.replace(/(\.\w+)?$/, '.critical.log')
+    if (options.useTxtExtension) {
+      this.filePath = this.filePath.replace(/(\.\w+)?$/, '.txt')
+      this.errorFilePath = this.errorFilePath.replace(/(\.\w+)?$/, '.txt')
+      this.criticalFilePath = this.criticalFilePath.replace(/(\.\w+)?$/, '.txt')
+    }
     if (this.createDirs) {
-      const baseDir = path.dirname(this.filePath)
-      fs.mkdir(baseDir, { recursive: true }).catch(() => {})
+      fs.mkdir(path.dirname(this.filePath), { recursive: true }).catch(() => {})
       fs.mkdir(path.dirname(this.errorFilePath), { recursive: true }).catch(() => {})
       fs.mkdir(path.dirname(this.criticalFilePath), { recursive: true }).catch(() => {})
     }
@@ -53,8 +63,7 @@ export class Logger {
 
   public async log(level: LogLevel, message: string): Promise<void> {
     if (level < this.minLogLevel) return
-    const timeStamp = new Date().toISOString()
-    const prefix = `[${timeStamp}] [${LogLevel[level]}]`
+    const prefix = `[${formatDate(new Date())}] [${LogLevel[level]}]`
     const entry = `${prefix}: ${message}\n`
     if (this.writeToConsole) {
       if (level === LogLevel.CRITICAL) {
@@ -71,15 +80,11 @@ export class Logger {
     if (this.isWriting) return
     this.isWriting = true
     try {
-      while (this.queue.length > 0) {
+      while (this.queue.length) {
         const { level, entry } = this.queue.shift()!
         await fs.appendFile(this.filePath, entry, 'utf8')
-        if (level >= LogLevel.ERROR) {
-          await fs.appendFile(this.errorFilePath, entry, 'utf8')
-        }
-        if (level === LogLevel.CRITICAL) {
-          await fs.appendFile(this.criticalFilePath, entry, 'utf8')
-        }
+        if (level >= LogLevel.ERROR) await fs.appendFile(this.errorFilePath, entry, 'utf8')
+        if (level === LogLevel.CRITICAL) await fs.appendFile(this.criticalFilePath, entry, 'utf8')
         if (this.maxFileSize) {
           await this.checkRotation(this.filePath)
           await this.checkRotation(this.errorFilePath)
@@ -88,9 +93,7 @@ export class Logger {
       }
     } finally {
       this.isWriting = false
-      if (this.queue.length > 0) {
-        void this.processQueue()
-      }
+      if (this.queue.length) void this.processQueue()
     }
   }
 
@@ -98,8 +101,8 @@ export class Logger {
     try {
       const stats = await fs.stat(pathToCheck)
       if (stats.size > this.maxFileSize!) {
-        const timeStamp = new Date().toISOString().replace(/[:.]/g, '-')
-        await fs.rename(pathToCheck, pathToCheck + '.' + timeStamp + '.old')
+        const ts = new Date().toISOString().replace(/[:.]/g, '-')
+        await fs.rename(pathToCheck, pathToCheck + '.' + ts + '.old')
       }
     } catch {}
   }
@@ -107,19 +110,15 @@ export class Logger {
   public async debug(msg: string) {
     return this.log(LogLevel.DEBUG, msg)
   }
-
   public async info(msg: string) {
     return this.log(LogLevel.INFO, msg)
   }
-
   public async warn(msg: string) {
     return this.log(LogLevel.WARN, msg)
   }
-
   public async error(msg: string) {
     return this.log(LogLevel.ERROR, msg)
   }
-
   public async critical(msg: string) {
     return this.log(LogLevel.CRITICAL, msg)
   }

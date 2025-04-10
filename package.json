@@ -8,6 +8,10 @@
     "build": "tsc",
     "prepare": "npm run build"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aqueleyan/filog"
+  },
   "author": "Yan Gustavo",
   "license": "MIT",
   "files": [
