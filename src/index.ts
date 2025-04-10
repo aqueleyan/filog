@@ -44,10 +44,12 @@ export class Logger {
   private maxFileSize?: number
   private errorFilePath: string
   private criticalFilePath: string
+  private showEntriesPrefix: boolean
   private queue: { level: LogLevel; entry: string }[] = []
   private isWriting = false
-  private initPromise: Promise<void>
-  private showEntriesPrefix: boolean
+  private mainFileReady = false
+  private errorFileReady = false
+  private criticalFileReady = false
 
   constructor(options: LoggerOptions) {
     this.filePath = options.filePath
@@ -55,48 +57,65 @@ export class Logger {
     this.minLogLevel = options.minLogLevel ?? LogLevel.DEBUG
     this.writeToConsole = options.console ?? true
     this.createDirs = options.createPathDirectories ?? true
-    this.showEntriesPrefix = options.showEntriesPrefix ?? false
     this.maxFileSize = options.maxFileSize
+    this.showEntriesPrefix = options.showEntriesPrefix ?? false
     this.errorFilePath = options.errorFilePath
       ? options.errorFilePath
       : this.filePath.replace(/(\.\w+)?$/, '.error.log')
     this.criticalFilePath = options.criticalFilePath
       ? options.criticalFilePath
       : this.filePath.replace(/(\.\w+)?$/, '.critical.log')
-
     if (this.createDirs) {
       fs.mkdir(path.dirname(this.filePath), { recursive: true }).catch(() => {})
       fs.mkdir(path.dirname(this.errorFilePath), { recursive: true }).catch(() => {})
       fs.mkdir(path.dirname(this.criticalFilePath), { recursive: true }).catch(() => {})
     }
 
-    this.initPromise = this.initializeFile(this.logName)
+    void this.initializeMainFile()
   }
 
-  private async initializeFile(logName: string): Promise<void> {
+  private async initializeMainFile(): Promise<void> {
     try {
       await fs.stat(this.filePath)
-
       if (this.showEntriesPrefix) {
         const tz = getSystemTimeZone()
-        const prefix = `\n--- NEW LOGGER SESSION: ${logName} on [${tz}] started at [${formatDate(new Date())}] ---\n`
+        const prefix = `\n--- NEW LOGGER SESSION: ${this.logName} on [${tz}] started at [${formatDate(new Date())}] ---\n`
         await fs.appendFile(this.filePath, prefix, 'utf8')
       }
     } catch {
       const tz = getSystemTimeZone()
-      const header = `REAL TIME AUDIT: ${logName}\nDate set in the format [DD-MM-YYYY - HH:MM:SS] in [${tz}]\n`
+      const header = `REAL TIME AUDIT: ${this.logName}\nDate set in the format [DD-MM-YYYY - HH:MM:SS] in [${tz}]\n`
       await fs.writeFile(this.filePath, header, 'utf8')
+    } finally {
+      this.mainFileReady = true
+    }
+  }
+
+  private async initializeFileIfNeeded(filePath: string, isReadyFlag: 'errorFileReady' | 'criticalFileReady') {
+    if (this[isReadyFlag]) return
+    try {
+      await fs.stat(filePath)
+      if (this.showEntriesPrefix) {
+        const tz = getSystemTimeZone()
+        const prefix = `\n--- NEW LOGGER SESSION: ${this.logName} on [${tz}] started at [${formatDate(new Date())}] ---\n`
+        await fs.appendFile(filePath, prefix, 'utf8')
+      }
+    } catch {
+      const tz = getSystemTimeZone()
+      const header = `REAL TIME AUDIT: ${this.logName}\nDate set in the format [DD-MM-YYYY - HH:MM:SS] in [${tz}]\n`
+      await fs.writeFile(filePath, header, 'utf8')
+    } finally {
+      this[isReadyFlag] = true
     }
   }
 
   public async log(level: LogLevel, message: string): Promise<void> {
-    await this.initPromise
     if (level < this.minLogLevel) return
     const prefix = `[${formatDate(new Date())}] [${LogLevel[level]}]`
     const entry = `${prefix}: ${message}\n`
     if (this.writeToConsole) {
       if (level === LogLevel.CRITICAL) {
-        console.log('\x1b[41m' + entry.trim() + '\x1b[0m')
+        console.log('\x1b[41m%s\x1b[0m', entry.trim())
       } else {
         console.log(entry.trim())
       }
@@ -109,19 +128,27 @@ export class Logger {
     if (this.isWriting) return
     this.isWriting = true
     try {
-      while (this.queue.length > 0) {
+      while (this.queue.length) {
         const { level, entry } = this.queue.shift()!
+
+        while (!this.mainFileReady) {
+          await new Promise((r) => setTimeout(r, 25))
+        }
         await fs.appendFile(this.filePath, entry, 'utf8')
+
         if (level >= LogLevel.ERROR) {
+          await this.initializeFileIfNeeded(this.errorFilePath, 'errorFileReady')
           await fs.appendFile(this.errorFilePath, entry, 'utf8')
         }
         if (level === LogLevel.CRITICAL) {
+          await this.initializeFileIfNeeded(this.criticalFilePath, 'criticalFileReady')
           await fs.appendFile(this.criticalFilePath, entry, 'utf8')
         }
+
         if (this.maxFileSize) {
           await this.checkRotation(this.filePath)
-          await this.checkRotation(this.errorFilePath)
-          await this.checkRotation(this.criticalFilePath)
+          if (level >= LogLevel.ERROR) await this.checkRotation(this.errorFilePath)
+          if (level === LogLevel.CRITICAL) await this.checkRotation(this.criticalFilePath)
         }
       }
     } finally {
@@ -132,12 +159,12 @@ export class Logger {
     }
   }
 
-  private async checkRotation(pathToCheck: string): Promise<void> {
+  private async checkRotation(file: string): Promise<void> {
     try {
-      const stats = await fs.stat(pathToCheck)
+      const stats = await fs.stat(file)
       if (stats.size > (this.maxFileSize ?? Infinity)) {
-        const timeStamp = new Date().toISOString().replace(/[:.]/g, '-')
-        await fs.rename(pathToCheck, `${pathToCheck}.${timeStamp}.old`)
+        const ts = new Date().toISOString().replace(/[:.]/g, '-')
+        await fs.rename(file, `${file}.${ts}.old`)
       }
     } catch {}
   }
