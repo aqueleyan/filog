@@ -1,4 +1,3 @@
-<!-- Improved compatibility of back to top link: See: https://github.com/othneildrew/Best-README-Template/pull/73 -->
 <a id="readme-top"></a>
 
 <!-- PROJECT SHIELDS -->
@@ -54,11 +53,12 @@
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
+    <li><a href="#props">Props</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
+
   </ol>
 </details>
 
@@ -138,7 +138,7 @@ npm install npm@latest -g
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-<!-- USAGE EXAMPLES -->
+<!--  EXAMPLES -->
 ## Usage
 
 You can use this logger in any Node.js application or TypeScript script that requires robust logging. Some use cases:
@@ -157,8 +157,42 @@ logger.error("Error: something failed and needs attention.");
 logger.critical("Critical: the application might be compromised!");
 ```
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+### Complete Example
 
+```ts
+import { Logger, LogLevel } from 'filog'
+
+const logger = new Logger({
+  filePath: 'logs/app.log',
+  minLogLevel: LogLevel.DEBUG,        // Logs everything from DEBUG upwards
+  console: true,                      // Prints logs to the console
+  createPathDirectories: true,        // Creates the 'logs/' folder if it doesn't exist
+  maxFileSize: 1024 * 1024,           // 1MB for log rotation
+  errorFilePath: 'logs/app.error.log',
+  criticalFilePath: 'logs/app.critical.log',
+})
+
+logger.debug('Debug message')
+logger.info('Info message')
+logger.warn('Warning message')
+logger.error('Error message')
+logger.critical('Critical message')
+```
+
+<!-- Props -->
+## Props
+
+| Property              | Type        | Description                                                                                                                                                         | Usage Example                                                                                           |
+|-----------------------|------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------|
+| **filePath**          | `string`   | The base path for the main log file. All logs at or above `minLogLevel` will be written to this file.                                                              | ```ts\nnew Logger({\n  filePath: 'logs/app.log'\n});\n```                                                |
+| **minLogLevel**       | `LogLevel` | Defines the minimum log level that will be recorded. Logs below this level are ignored.                                                                             | ```ts\nnew Logger({\n  filePath: 'logs/app.log',\n  minLogLevel: LogLevel.INFO\n});\n```                 |
+| **console**           | `boolean`  | If `true`, prints log messages to the console (in addition to writing them to files).                                                                               | ```ts\nnew Logger({\n  filePath: 'logs/app.log',\n  console: false\n});\n```                             |
+| **createPathDirectories** | `boolean` | If `true`, automatically creates directories that do not exist for `filePath`, `errorFilePath`, and `criticalFilePath`.                                          | ```ts\nnew Logger({\n  filePath: 'logs/app.log',\n  createPathDirectories: true\n});\n```                |
+| **maxFileSize**       | `number`   | Maximum file size (in bytes) for the log file. When exceeded, the current file is renamed (with a timestamp), and a new log file is created.                        | ```ts\nnew Logger({\n  filePath: 'logs/app.log',\n  maxFileSize: 1024 * 1024 // 1MB\n});\n```            |
+| **errorFilePath**     | `string`   | Specific path to store **ERROR** logs (>= 40). If not provided, it is automatically generated based on `filePath` (for example, `app.error.log`).                    | ```ts\nnew Logger({\n  filePath: 'logs/app.log',\n  errorFilePath: 'logs/my-error.log'\n});\n```         |
+| **criticalFilePath**  | `string`   | Specific path to store **CRITICAL** logs (50). If not provided, it is automatically generated based on `filePath` (for example, `app.critical.log`).                | ```ts\nnew Logger({\n  filePath: 'logs/app.log',\n  criticalFilePath: 'logs/my-critical.log'\n});\n```   |
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- ROADMAP -->
 ## Roadmap
@@ -168,7 +202,6 @@ logger.critical("Critical: the application might be compromised!");
 - [x] Separate logs for ERROR and CRITICAL
 - [ ] Customizable message formatting
 - [ ] Integration with external logging services (Elasticsearch, Datadog, etc.)
-- [ ] Additional documentation on best logging practices
 
 See the [open issues](https://github.com/aqueleyan/filog/issues) for a full list of proposed features (and known issues).
 
