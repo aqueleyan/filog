@@ -35,6 +35,7 @@ function getSystemTimeZone(): string {
 }
 
 export class Logger {
+  private logName: string
   private filePath: string
   private minLogLevel: LogLevel
   private writeToConsole: boolean
@@ -44,9 +45,11 @@ export class Logger {
   private criticalFilePath: string
   private queue: { level: LogLevel; entry: string }[] = []
   private isWriting = false
+  private initPromise: Promise<void>
 
   constructor(options: LoggerOptions) {
     this.filePath = options.filePath
+    this.logName = options.logName ?? this.filePath
     this.minLogLevel = options.minLogLevel ?? LogLevel.DEBUG
     this.writeToConsole = options.console ?? true
     this.createDirs = options.createPathDirectories ?? true
@@ -59,17 +62,31 @@ export class Logger {
       : this.filePath.replace(/(\.\w+)?$/, '.critical.log')
 
     if (this.createDirs) {
-      const baseDir = path.dirname(this.filePath)
-      fs.mkdir(baseDir, { recursive: true }).catch(() => {})
+      fs.mkdir(path.dirname(this.filePath), { recursive: true }).catch(() => {})
       fs.mkdir(path.dirname(this.errorFilePath), { recursive: true }).catch(() => {})
       fs.mkdir(path.dirname(this.criticalFilePath), { recursive: true }).catch(() => {})
+    }
+
+    this.initPromise = this.initializeFile(this.logName)
+  }
+
+  private async initializeFile(logName: string): Promise<void> {
+    try {
+      await fs.stat(this.filePath)
+      const tz = getSystemTimeZone()
+      const prefix = `\n--- NEW LOGGER SESSION: ${logName} on [${tz}] started at [${formatDate(new Date())}] ---\n`
+      await fs.appendFile(this.filePath, prefix, 'utf8')
+    } catch {
+      const tz = getSystemTimeZone()
+      const header = `REAL TIME AUDIT: ${logName}\nDate set in the format [DD-MM-YYYY - HH:MM:SS] in [${tz}]\n`
+      await fs.writeFile(this.filePath, header, 'utf8')
     }
   }
 
   public async log(level: LogLevel, message: string): Promise<void> {
+    await this.initPromise
     if (level < this.minLogLevel) return
-    const timeStamp = formatDate(new Date());
-    const prefix = `[${timeStamp}] [${LogLevel[level]}]`
+    const prefix = `[${formatDate(new Date())}] [${LogLevel[level]}]`
     const entry = `${prefix}: ${message}\n`
     if (this.writeToConsole) {
       if (level === LogLevel.CRITICAL) {
@@ -112,7 +129,7 @@ export class Logger {
   private async checkRotation(pathToCheck: string): Promise<void> {
     try {
       const stats = await fs.stat(pathToCheck)
-      if (stats.size > this.maxFileSize!) {
+      if (stats.size > (this.maxFileSize ?? Infinity)) {
         const timeStamp = new Date().toISOString().replace(/[:.]/g, '-')
         await fs.rename(pathToCheck, pathToCheck + '.' + timeStamp + '.old')
       }
@@ -134,7 +151,7 @@ export class Logger {
   public async error(msg: string) {
     return this.log(LogLevel.ERROR, msg)
   }
-
+  
   public async critical(msg: string) {
     return this.log(LogLevel.CRITICAL, msg)
   }
