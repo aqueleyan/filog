@@ -18,6 +18,7 @@ export interface LoggerOptions {
   maxFileSize?: number
   errorFilePath?: string
   criticalFilePath?: string
+  showEntriesPrefix?: boolean
 }
 
 function formatDate(d: Date): string {
@@ -46,6 +47,7 @@ export class Logger {
   private queue: { level: LogLevel; entry: string }[] = []
   private isWriting = false
   private initPromise: Promise<void>
+  private showEntriesPrefix: boolean
 
   constructor(options: LoggerOptions) {
     this.filePath = options.filePath
@@ -53,6 +55,7 @@ export class Logger {
     this.minLogLevel = options.minLogLevel ?? LogLevel.DEBUG
     this.writeToConsole = options.console ?? true
     this.createDirs = options.createPathDirectories ?? true
+    this.showEntriesPrefix = options.showEntriesPrefix ?? false
     this.maxFileSize = options.maxFileSize
     this.errorFilePath = options.errorFilePath
       ? options.errorFilePath
@@ -73,9 +76,12 @@ export class Logger {
   private async initializeFile(logName: string): Promise<void> {
     try {
       await fs.stat(this.filePath)
-      const tz = getSystemTimeZone()
-      const prefix = `\n--- NEW LOGGER SESSION: ${logName} on [${tz}] started at [${formatDate(new Date())}] ---\n`
-      await fs.appendFile(this.filePath, prefix, 'utf8')
+
+      if (this.showEntriesPrefix) {
+        const tz = getSystemTimeZone()
+        const prefix = `\n--- NEW LOGGER SESSION: ${logName} on [${tz}] started at [${formatDate(new Date())}] ---\n`
+        await fs.appendFile(this.filePath, prefix, 'utf8')
+      }
     } catch {
       const tz = getSystemTimeZone()
       const header = `REAL TIME AUDIT: ${logName}\nDate set in the format [DD-MM-YYYY - HH:MM:SS] in [${tz}]\n`
@@ -131,7 +137,7 @@ export class Logger {
       const stats = await fs.stat(pathToCheck)
       if (stats.size > (this.maxFileSize ?? Infinity)) {
         const timeStamp = new Date().toISOString().replace(/[:.]/g, '-')
-        await fs.rename(pathToCheck, pathToCheck + '.' + timeStamp + '.old')
+        await fs.rename(pathToCheck, `${pathToCheck}.${timeStamp}.old`)
       }
     } catch {}
   }
@@ -151,7 +157,7 @@ export class Logger {
   public async error(msg: string) {
     return this.log(LogLevel.ERROR, msg)
   }
-  
+
   public async critical(msg: string) {
     return this.log(LogLevel.CRITICAL, msg)
   }
