@@ -20,7 +20,7 @@
     <img src="images/logo.png" alt="Logo" width="80" height="80">
   </a>
 
-  <h3 align="center">Logger in TypeScript</h3>
+  <h3 align="center">Filog in TypeScript</h3>
 
   <p align="center">
     A simple and asynchronous logger written in TypeScript.
@@ -66,7 +66,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+[![Product Name Screen Shot][product-screenshot]](https://cdn.discordapp.com/attachments/889416728042405891/1359772303503921313/image.png?ex=67f8b224&is=67f760a4&hm=a23dc6d59667163a4993efe2e8baec63485c13046fdd477f2d9eff413b244700&)
 
 This project provides an **asynchronous logger in TypeScript** with support for multiple log levels (DEBUG, INFO, WARN, ERROR, CRITICAL), multiple file outputs, log rotation based on file size, and an option to print to the console or not.
 
@@ -182,16 +182,21 @@ logger.critical('Critical message')
 <!-- Props -->
 ## Props
 
-| Property              | Type        | Description                                                                                                                                                         | Usage Example                                                                                           |
-|-----------------------|------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------|
-| **filePath**          | `string`   | The base path for the main log file. All logs at or above `minLogLevel` will be written to this file.                                                              | ```ts\nnew Logger({\n  filePath: 'logs/app.log'\n});\n```                                                |
-| **minLogLevel**       | `LogLevel` | Defines the minimum log level that will be recorded. Logs below this level are ignored.                                                                             | ```ts\nnew Logger({\n  filePath: 'logs/app.log',\n  minLogLevel: LogLevel.INFO\n});\n```                 |
-| **console**           | `boolean`  | If `true`, prints log messages to the console (in addition to writing them to files).                                                                               | ```ts\nnew Logger({\n  filePath: 'logs/app.log',\n  console: false\n});\n```                             |
-| **createPathDirectories** | `boolean` | If `true`, automatically creates directories that do not exist for `filePath`, `errorFilePath`, and `criticalFilePath`.                                          | ```ts\nnew Logger({\n  filePath: 'logs/app.log',\n  createPathDirectories: true\n});\n```                |
-| **maxFileSize**       | `number`   | Maximum file size (in bytes) for the log file. When exceeded, the current file is renamed (with a timestamp), and a new log file is created.                        | ```ts\nnew Logger({\n  filePath: 'logs/app.log',\n  maxFileSize: 1024 * 1024 // 1MB\n});\n```            |
-| **errorFilePath**     | `string`   | Specific path to store **ERROR** logs (>= 40). If not provided, it is automatically generated based on `filePath` (for example, `app.error.log`).                    | ```ts\nnew Logger({\n  filePath: 'logs/app.log',\n  errorFilePath: 'logs/my-error.log'\n});\n```         |
-| **criticalFilePath**  | `string`   | Specific path to store **CRITICAL** logs (50). If not provided, it is automatically generated based on `filePath` (for example, `app.critical.log`).                | ```ts\nnew Logger({\n  filePath: 'logs/app.log',\n  criticalFilePath: 'logs/my-critical.log'\n});\n```   |
+## Props
 
+| Property                  | Type        | Description                                                                                                                                                               | Default / Recommended              |
+|---------------------------|------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------|
+| **\*filePath**           | `string`   | The base path for the main log file (mandatory).                                                                                                                          | Recommended: `"logs/app.log"`      |
+| **\*maxFileSize**        | `number`   | Maximum file size (in bytes) for log rotation. When exceeded, the current file is renamed (with a timestamp), and a new file is created. If unset, no rotation is applied. | Recommended: `1048576 (1 MB)`      |
+| **logName**              | `string`   | Identifies the log in the file header. If not provided, it inherits from `filePath`.                                                                                      | Inherits from `filePath`           |
+| **minLogLevel**          | `LogLevel` | Defines the minimum log level to be recorded. Logs below this level are ignored.                                                                                          | `LogLevel.DEBUG`                   |
+| **console**              | `boolean`  | If `true`, prints log messages to the console (in addition to writing them to files).                                                                                     | `true`                             |
+| **createPathDirectories**| `boolean`  | If `true`, automatically creates directories that do not exist for `filePath`, `errorFilePath`, and `criticalFilePath`.                                                  | `true`                             |
+| **errorFilePath**        | `string`   | Specific path to store **ERROR** logs (≥ 40). If not provided, it's automatically derived from `filePath` (e.g. `app.error.log`).                                         | Derived from `filePath`            |
+| **criticalFilePath**     | `string`   | Specific path to store **CRITICAL** logs (50). If not provided, it's automatically derived from `filePath` (e.g. `app.critical.log`).                                     | Derived from `filePath`            |
+| **showEntriesPrefix**    | `boolean`  | If `true`, appends a "new logger session" prefix when an existing file is detected (rather than newly created).                                                           | `false`                            |
+
+> **\*** Properties marked with an asterisk (`*`) do not have a built-in default and should be explicitly set or have a recommended value.  
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- ROADMAP -->
@@ -200,8 +205,6 @@ logger.critical('Critical message')
 - [x] Support for creating log path directories
 - [x] Support for file rotation by maximum size
 - [x] Separate logs for ERROR and CRITICAL
-- [ ] Customizable message formatting
-- [ ] Integration with external logging services (Elasticsearch, Datadog, etc.)
 
 See the [open issues](https://github.com/aqueleyan/filog/issues) for a full list of proposed features (and known issues).
 
@@ -217,9 +220,9 @@ If you have suggestions that would make this better, please fork the repo and cr
 Don't forget to give the project a ⭐! Thanks again!
 
 1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/MyAmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/MyAmazingFeature`)
+2. Create your Feature Branch (`git checkout -b feature/MyFilogFeature`)
+3. Commit your Changes (`git commit -m 'Add a customize prefix'`)
+4. Push to the Branch (`git push origin feature/MyFilogFeature`)
 5. Open a Pull Request
 
 ### Main :
