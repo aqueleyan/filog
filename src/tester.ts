@@ -1,4 +1,4 @@
-import { Logger, LogLevel } from ".";
+import { Logger, LogLevel } from "./Logger";
 
 const logger = new Logger({
   filePath: './logs/app.log',
